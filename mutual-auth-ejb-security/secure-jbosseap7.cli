@@ -1,0 +1,31 @@
+/core-service=management/security-realm=SSLRealm:add   
+
+/core-service=management/security-realm=SSLRealm/server-identity=ssl:add(alias=server,key-password=password,keystore-password=password,keystore-path="${jboss.home.dir}/certs/server.jks")
+
+### You don't have to do this if not using 2 way SSL
+/core-service=management/security-realm=SSLRealm/authentication=truststore:add(keystore-password=changeit,keystore-path="${jboss.home.dir}/certs/truststore.jks")
+
+### Add security domain to be used to secure the deployed application
+/subsystem=security/security-domain=sslCustomSecDomain:add
+
+/subsystem=security/security-domain=sslCustomSecDomain/authentication=classic:add(login-modules=[{code=>"org.jboss.as.security.auth.ExtendedCertificateLoginModule",flag=>required, module=>"ext-cert-login-module", module-options=>["password-stacking"=>"useFirstPass","verifier"=>"org.jboss.security.auth.certs.AnyCertVerifier", "roles" => "webuser,ejbuser", "defaultRoles" => "guest", "securityDomain"=> "sslCustomSecDomain"]}])
+
+/subsystem=security/security-domain=sslCustomSecDomain/jsse=classic:add(keystore={url => "${jboss.home.dir}/certs/server.jks", password => password}, truststore={url => "${jboss.home.dir}/certs/truststore.jks", password => changeit}, client-auth=true, client-alias=server)
+
+reload
+
+### If you already had the security domain you can update it with the following command
+/subsystem=security/security-domain=sslCustomSecDomain/authentication=classic/login-module=org.jboss.as.security.auth.ExtendedCertificateLoginModule:write-attribute(name=module-options,value={"password-stacking" => "useFirstPass","verifier" => "org.jboss.security.auth.certs.AnyCertVerifier","roles" => "webuser,ejbuser","defaultRoles" => "guest","securityDomain" => "sslCustomSecDomain"})
+
+### configure https listener on undertow
+/subsystem=undertow/server=default-server/https-listener=default-https:add(enabled=true,enabled-protocols="TLSv1.1,TLSv1.2",verify-client=REQUIRED,security-realm=SSLRealm,secure=true,socket-binding=https)
+
+### Add request dump filter
+/subsystem=undertow/configuration=filter/expression-filter=requestDumperExpression:add(expression="dump-request")
+
+/subsystem=undertow/server=default-server/host=default-host/filter-ref=requestDumperExpression:add
+
+### add log categories for debugging
+/subsystem=logging/logger=org.jboss.as.security:add(level=TRACE)
+
+/subsystem=logging/logger=org.jboss.security:add(level=TRACE)
