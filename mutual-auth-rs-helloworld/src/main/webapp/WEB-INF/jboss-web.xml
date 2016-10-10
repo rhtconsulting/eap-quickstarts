@@ -1,0 +1,3 @@
+<jboss-web>
+    <security-domain>sslCustomSecDomain</security-domain>
+</jboss-web>

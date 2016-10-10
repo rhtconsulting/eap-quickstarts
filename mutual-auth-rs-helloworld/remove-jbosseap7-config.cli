@@ -1,0 +1,21 @@
+### remove configuration
+
+if result.ENABLED==true of deployment-info
+	undeploy mutualauth-rs-helloworld.war
+end-if
+
+/subsystem=security/security-domain=sslCustomSecDomain:remove
+
+/subsystem=undertow/configuration=filter/expression-filter=requestDumperExpression:remove
+
+/subsystem=undertow/server=default-server/host=default-host/filter-ref=requestDumperExpression:remove
+
+/subsystem=undertow/server=default-server/https-listener=default-https:remove
+
+/core-service=management/security-realm=SSLRealm:remove
+
+/subsystem=logging/logger=org.jboss.as.security:remove
+
+/subsystem=logging/logger=org.jboss.security:remove
+
+reload
