@@ -1,8 +1,8 @@
 ### remove configuration
 
-if result.ENABLED==true of deployment-info
-	undeploy mutualauth-rs-helloworld.war
-end-if
+#if result.ENABLED==true of deployment-info
+#	undeploy mutualauth-rs-helloworld.war
+#end-if
 
 /subsystem=security/security-domain=sslCustomSecDomain:remove
 
