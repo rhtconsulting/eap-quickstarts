@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<module xmlns="urn:jboss:module:1.1" name="custom-login-module">
+
+	<resources>
+		<resource-root path="extended-certificate-login-module.jar" />
+		<resource-root path="extended-remoting-login-module.jar"/>
+	</resources>
+
+	<dependencies>
+		<module name="org.jboss.as.security">
+			<imports>
+				<include path="wildfly-security-7.0.0.GA-redhat-2.jar" />
+			</imports>
+		</module>
+		<module name="org.picketbox">
+			<imports>
+				<include path="picketbox-4.9.6.Final-redhat-1.jar" />
+			</imports>
+			<imports>
+				<include path="picketbox-infinispan-4.9.6.Final-redhat-1.jar" />
+			</imports>
+			<imports>
+				<include path="picketbox-commons-1.0.0.final-redhat-4.jar" />
+			</imports>
+		</module>
+		<module name="javax.api" />
+	</dependencies>
+</module>
