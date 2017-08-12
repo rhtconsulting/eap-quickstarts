@@ -20,11 +20,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jboss.quickstarts.eap</groupId>
-    <artifactId>jboss-helloworld-jms</artifactId>
+    <artifactId>jboss-helloworld-jms-netty-servlet</artifactId>
     <version>6.4.0.GA</version>
     <packaging>jar</packaging>
-    <name>JBoss EAP Quickstart: helloworld-jms</name>
-    <description>helloworld-jms: Helloworld JMS external producer/consumer client</description>
+    <name>JBoss EAP Quickstart: helloworld-jms-netty-servlet</name>
+    <description>helloworld-jms-netty-servlet: Helloworld JMS external producer/consumer client</description>
 
     <url>http://jboss.org/jbossas</url>
     <licenses>

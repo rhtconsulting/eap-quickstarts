@@ -1,0 +1,15 @@
+# Batch script to add the JMS configuration to the JBoss server
+
+# Start batching commands
+batch
+
+# Configure netty-servlet connection factory
+connection-factory add --name=ServletConnectionFactory --connector={netty-servlet => undefine} --entries=["java:jboss/exported/jms/ServletConnectionFactory"]
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+:reload
+
+
