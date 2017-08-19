@@ -10,7 +10,7 @@ Source: <https://github.com/rhtconsulting/eap-quickstarts/>
 What is it?
 -----------
 
-The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform using the Netty Servlet connector. The Netty Servlet connector allows remote JMS traffic to be tunneled over HTTP to a servlet running in JBoss EAP, thus reducing the number of open network ports on the host.
+The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform using the Netty Servlet connector. The Netty Servlet connector allows remote JMS traffic to be tunneled over HTTP to a servlet running in JBoss EAP, thus reducing the number of requird open network ports on the host.
 
 It contains the following:
 
@@ -146,7 +146,8 @@ In order for JBoss EAP to receive remote JMS traffic via a servlet, the Netty Se
 
         For Linux: cp -r netty-servlet-deployment/* EAP_HOME/standalone/deployments/
 
-NOTE: The messaging.war.dodeploy is required to deploy the exploded messaging.war application.
+_NOTE_: The messaging.war.dodeploy is required to deploy the exploded messaging.war application.
+
 3. Keep in mind, the `servlet-path` parameter of the `netty-servlet` connector must match the servlet context defined by the WAR name and the servlet-mapping url-pattern in the web.xml of the Netty servlet.
 
 Start the JBoss EAP Server with the Full Profile
@@ -181,9 +182,9 @@ Investigate the Console Output
 If the Maven command is successful, with the default configuration you will see output similar to this:
 
     Mar 14, 2012 1:38:58 PM org.jboss.as.quickstarts.jms.HelloWorldJMSClient main
-    INFO: Attempting to acquire connection factory "jms/RemoteConnectionFactory"
+    INFO: Attempting to acquire connection factory "jms/ServletConnectionFactory"
     Mar 14, 2012 1:38:58 PM org.jboss.as.quickstarts.jms.HelloWorldJMSClient main
-    INFO: Found connection factory "jms/RemoteConnectionFactory" in JNDI
+    INFO: Found connection factory "jms/ServletConnectionFactory" in JNDI
     Mar 14, 2012 1:38:58 PM org.jboss.as.quickstarts.jms.HelloWorldJMSClient main
     INFO: Attempting to acquire destination "jms/queue/test"
     Mar 14, 2012 1:38:58 PM org.jboss.as.quickstarts.jms.HelloWorldJMSClient main
@@ -242,7 +243,7 @@ The example provides for a certain amount of customization for the `mvn:exec` pl
 
 * `java.naming.provider.url`
 
-	  This property allows configuration of the JNDI directory used to lookup the JMS destination. This is useful when the client resides on another host. 
+    This property allows configuration of the JNDI directory used to lookup the JMS destination. This is useful when the client resides on another host. 
 
     Default: `"localhost"`
 
