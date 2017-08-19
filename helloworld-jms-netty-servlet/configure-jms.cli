@@ -1,0 +1,21 @@
+# Batch script to add the JMS configuration to the JBoss server
+
+# Start batching commands
+batch
+
+# Configure netty-servlet acceptor
+/subsystem=messaging/hornetq-server=default/acceptor=netty-servlet:add(factory-class=org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory, param={use-invm=true, host=org.hornetq})
+
+# Configure netty-servlet connector
+/subsystem=messaging/hornetq-server=default/remote-connector=netty-servlet:add(socket-binding=http, param={use-servlet=true, servlet-path="/messaging/HornetQServlet"})
+
+# Configure the JMS test queue
+jms-queue add --queue-address=testQueue --entries=queue/test,java:jboss/exported/jms/queue/test
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+:reload
+
+

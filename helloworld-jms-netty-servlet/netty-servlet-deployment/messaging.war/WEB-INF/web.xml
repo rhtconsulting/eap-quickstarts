@@ -1,0 +1,16 @@
+<web-app>
+  <servlet>
+    <servlet-name>HornetQServlet</servlet-name>
+    <servlet-class>org.jboss.netty.channel.socket.http.HttpTunnelingServlet</servlet-class>
+    <init-param>
+      <param-name>endpoint</param-name>
+      <param-value>local:org.hornetq</param-value>
+    </init-param>
+      <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>HornetQServlet</servlet-name>
+    <url-pattern>/HornetQServlet</url-pattern>
+  </servlet-mapping>
+</web-app>
