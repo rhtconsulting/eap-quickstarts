@@ -10,7 +10,7 @@ Source: <https://github.com/rhtconsulting/eap-quickstarts/>
 What is it?
 -----------
 
-The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform using the Netty Servlet connector. The Netty Servlet connector allows remote JMS traffic to be tunneled over HTTP to a servlet running in JBoss EAP, thus reducing the number of requird open network ports on the host.
+The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform using the Netty Servlet connector. The Netty Servlet connector allows remote JMS traffic to be tunneled over HTTP to a servlet running in JBoss EAP, thus reducing the number of required open network ports on the host.
 
 It contains the following:
 
