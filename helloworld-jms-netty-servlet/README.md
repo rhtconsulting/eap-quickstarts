@@ -142,7 +142,7 @@ Deploy the Netty Servlet
 In order for JBoss EAP to receive remote JMS traffic via a servlet, the Netty Servlet application must be deployed. All that is needed to do this is to either 1) enable the servlet via an existing web application that is already deployed to JBoss EAP, or 2) deploy a dedicated application to enable the servlet. This quickstart will use option 2).
 
 1. Inspect the contents of `netty-servlet-deployment/messaging.war` in the root of the quickstart directory.
-    1. The Netty Servlet class is found in the `org.jboss.netty` JBoss Module. The application that deploys the Netty Servlet must declare a dependency on this JBoss module. In this quickstart the dependency is declared in the `WEB-INF/jboss-deployment-structure.xml` file.
+    1. The Netty Servlet class is found in the `org.jboss.netty` JBoss Module. The application that deploys the Netty Servlet must declare a dependency on this JBoss module. In this quickstart, the dependency is declared in the `WEB-INF/jboss-deployment-structure.xml` file.
     2. The `WEB-INF/web.xml` declares the url-pattern of the Netty Servlet. This value, combined with the WAR application name, must match the `servlet-path` parameter of the `netty-servlet` connector.
 
 2. Copy all of the contents of the `netty-servlet-deployment` directory to EAP_HOME/standalone/deployments
