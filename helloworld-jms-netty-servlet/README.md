@@ -146,7 +146,7 @@ In order for JBoss EAP to receive remote JMS traffic via a servlet, the Netty Se
 
         For Linux: cp -r netty-servlet-deployment/* EAP_HOME/standalone/deployments/
 
-_NOTE_: The messaging.war.dodeploy is required to deploy the exploded messaging.war application.
+_NOTE_: The `messaging.war.dodeploy` file is required to deploy the exploded messaging.war application.
 
 3. Keep in mind, the `servlet-path` parameter of the `netty-servlet` connector must match the servlet context defined by the WAR name and the servlet-mapping url-pattern in the web.xml of the Netty servlet.
 
