@@ -1,28 +1,28 @@
-helloworld-jms: Helloworld JMS Example
-======================
-Author: Weston Price  
-Level: Intermediate  
-Technologies: JMS  
-Summary: The `helloworld-jms` quickstart demonstrates the use of external JMS clients with JBoss EAP.  
-Target Product: JBoss EAP  
-Source: <https://github.com/jboss-developer/jboss-eap-quickstarts/>  
+JBoss EAP Quickstart: Helloworld JMS Netty Servlet Example
+==========================================================
+Author: Weston Price and Bryan Parry
+Level: Intermediate
+Technologies: JMS
+Summary: The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with JBoss EAP using the Netty Servlet connector.
+Target Product: JBoss EAP
+Source: <https://github.com/rhtconsulting/eap-quickstarts/>
 
 What is it?
 -----------
 
-The `helloworld-jms` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform.
+The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with Red Hat JBoss Enterprise Application Platform using the Netty Servlet connector. The Netty Servlet connector allows remote JMS traffic to be tunneled over HTTP to a servlet running in JBoss EAP, thus reducing the number of open network ports on the host.
 
 It contains the following:
 
 1. A message producer that sends messages to a JMS destination deployed to a JBoss EAP server.
 
-2. A message consumer that receives message from a JMS destination deployed to a JBoss EAP server. 
+2. A message consumer that receives message from a JMS destination deployed to a JBoss EAP server.
 
 
 System requirements
 -------------------
 
-The application this project produces is designed to be run on Red Hat JBoss Enterprise Application Platform 6.1 or later. 
+The application this project produces is designed to be run on Red Hat JBoss Enterprise Application Platform 6.4.x. 
 
 All you need to build this project is Java 6.0 (Java SDK 1.6) or later, Maven 3.0 or later.
 
@@ -60,7 +60,7 @@ For an example of how to use the add-user utility, see the instructions located 
 Configure the JBoss EAP Server
 ---------------------------
 
-You configure the JMS `test` queue by running JBoss CLI commands. For your convenience, this quickstart batches the commands into a `configure-jms.cli` script provided in the root directory of this quickstart. 
+You configure the JMS `test` queue by running JBoss CLI commands. For your convenience, this quickstart batches the commands into `configure-jms.cli` and `configure-connection-factory.cli` scripts provided in the root directory of this quickstart. 
 
 1. Before you begin, back up your server configuration file
     * If it is running, stop the JBoss EAP server.
@@ -70,7 +70,7 @@ You configure the JMS `test` queue by running JBoss CLI commands. For your conve
 
         For Linux:  EAP_HOME/bin/standalone.sh -c standalone-full.xml
         For Windows:  EAP_HOME\bin\standalone.bat -c standalone-full.xml
-3. Review the `configure-jms.cli` file in the root of this quickstart directory. This script adds the `test` queue to the `messaging` subsystem in the server configuration file.
+3. Review the `configure-jms.cli` file in the root of this quickstart directory. This script adds the Netty Servlet acceptor, Netty Servlet connector, and the `test` queue to the `messaging` subsystem in the server configuration file.
 
 4. Open a new command prompt, navigate to the root directory of this quickstart, and run the following command, replacing EAP_HOME with the path to your server:
 
@@ -80,13 +80,51 @@ You configure the JMS `test` queue by running JBoss CLI commands. For your conve
 
         The batch executed successfully.
         {"outcome" => "success"}
-5. Stop the JBoss EAP server.
+
+5. Review the `configure-connection-factory.cli` file in the root of this quickstart directory. This script adds the JMS connection factory that will connect to the Netty Servlet.
+
+6. Run the following command, replacing EAP_HOME with the path to your server:
+
+        For Linux: EAP_HOME/bin/jboss-cli.sh --connect --file=configure-connection-factory.cli
+        For Windows: EAP_HOME\bin\jboss-cli.bat --connect --file=configure-connection-factory.cli 
+   You should see the following result when you run the script:
+
+        The batch executed successfully.
+        {"outcome" => "success"}
+
+7. Stop the JBoss EAP server.
 
 
 Review the Modified Server Configuration
 -----------------------------------
 
 After stopping the server, open the `EAP_HOME/standalone/configuration/standalone-full.xml` file and review the changes.
+
+The following `netty-servlet` connector was configured in the `<connectors>` element in the `messaging` subsystem.
+
+                    <netty-connector name="netty-servlet" socket-binding="http">
+                        <param key="use-servlet" value="true"/>
+                        <param key="servlet-path" value="/messaging/HornetQServlet"/>
+                    </netty-connector>
+
+The following `netty-servlet` acceptor was configured in the `<acceptors>` element in the `messaging` subsystem.
+
+                    <acceptor name="netty-servlet">
+                        <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
+                        <param key="use-invm" value="true"/>
+                        <param key="host" value="org.hornetq"/>
+                    </acceptor>
+
+The following `ServletConnectionFactory` connection-factor was configured in the `<jms-connection-factories>` element in the `messaging` subsystem.
+
+                    <connection-factory name="ServletConnectionFactory">
+                        <connectors>
+                            <connector-ref connector-name="netty-servlet"/>
+                        </connectors>
+                        <entries>
+                            <entry name="java:jboss/exported/jms/ServletConnectionFactory"/>
+                        </entries>
+                    </connection-factory>
 
 The following `testQueue` jms-queue was configured in a new `<jms-destinations>` element under the hornetq-server section of the `messaging` subsystem.
 
@@ -96,7 +134,20 @@ The following `testQueue` jms-queue was configured in a new `<jms-destinations>`
               <entry name="java:jboss/exported/jms/queue/test"/>
           </jms-queue>
       </jms-destinations>
- 
+
+
+Deploy the Netty Servlet
+------------------------
+
+In order for JBoss EAP to receive remote JMS traffic via a servlet, the Netty Servlet application must be deployed. All that is needed to do this is to either 1) enable the servlet via an existing web application that is already deployed to JBoss EAP, or 2) deploy a dedicated application to enable the servlet. This quickstart will use option 2).
+
+1. Inspect the contents of `netty-servlet-deployment/messaging.war` in the root of the quickstart directory.
+2. Copy all of the contents of the `netty-servlet-deployment` directory to EAP_HOME/standalone/deployments
+
+        For Linux: cp -r netty-servlet-deployment/* EAP_HOME/standalone/deployments/
+
+NOTE: The messaging.war.dodeploy is required to deploy the exploded messaging.war application.
+3. Keep in mind, the `servlet-path` parameter of the `netty-servlet` connector must match the servlet context defined by the WAR name and the servlet-mapping url-pattern in the web.xml of the Netty servlet.
 
 Start the JBoss EAP Server with the Full Profile
 ---------------
@@ -115,9 +166,9 @@ To run the quickstart from the command line:
 
 1. Make sure you have started the JBoss EAP server. See the instructions in the previous section.
 
-2. Open a command prompt and navigate to the root of the helloworld-jms quickstart directory:
+2. Open a command prompt and navigate to the root of the helloworld-jms-netty-servlet quickstart directory:
 
-        cd PATH_TO_QUICKSTARTS/helloworld-jms
+        cd PATH_TO_QUICKSTARTS/helloworld-jms-netty-servlet
 
 3. Type the following command to compile and execute the quickstart:
 
@@ -169,7 +220,7 @@ The example provides for a certain amount of customization for the `mvn:exec` pl
 
     The name of the JMS ConnectionFactory you want to use.
 
-    Default: `jms/RemoteConnectionFactory`
+    Default: `jms/ServletConnectionFactory`
 
 * `destination`
 
@@ -220,27 +271,3 @@ You can remove the JMS configuration by running the  `remove-jms.cli` script pro
 ### Remove the JMS Configuration Manually
 1. If it is running, stop the JBoss EAP server.
 2. Replace the `EAP_HOME/standalone/configuration/standalone-full.xml` file with the back-up copy of the file.
-
-
-Run the Quickstart in Red Hat JBoss Developer Studio or Eclipse
--------------------------------------
-You can also start the server and deploy the quickstarts or run the Arquillian tests from Eclipse using JBoss tools. For general information about how to import a quickstart, add a JBoss EAP server, and build and deploy a quickstart, see [Use JBoss Developer Studio or Eclipse to Run the Quickstarts](https://github.com/jboss-developer/jboss-developer-shared-resources/blob/master/guides/USE_JBDS.md#use-jboss-developer-studio-or-eclipse-to-run-the-quickstarts) 
-
-This quickstart consists of multiple projects, so it deploys and runs differently in JBoss Developer Studio than the other quickstarts.
-
-1. Configure and start the JBoss EAP server Red Hat JBoss Developer Studio:
-   * Define a server runtime environment that uses the `standalone-full.xml` configuration file.
-   * Start the server defined in the previous step.
-2. Outside of JBoss Developer Studio, configure the JMS `test` queue by running the JBoss CLI commands as described in the section above entitled *Configure the JBoss EAP Server*. 
-3. In JBoss Developer Studio, right-click and choose `Run As` --> `Java Application`.  In the `Select Java Application` window, choose `HellowWorldJMSClient - org.jboss.as.quickstarts.jms` and click `OK`. The client output displays in the `Console` window.
-The output messages appear in the `Console` window.
-
-Debug the Application
-------------------------------------
-
-If you want to debug the source code of any library in the project, run the following command to pull the source into your local repository. The IDE should then detect it.
-
-        mvn dependency:sources
-
-
- 

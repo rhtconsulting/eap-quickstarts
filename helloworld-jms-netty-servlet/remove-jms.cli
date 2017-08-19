@@ -3,7 +3,16 @@
 # Start batching commands
 batch
 
-# Configure the JMS test queue
+# Remove the JMS Connection Factory
+connection-factory remove --name=ServletConnectionFactory
+
+# Remove netty-servlet acceptor
+/subsystem=messaging/hornetq-server=default/acceptor=netty-servlet:remove
+
+# Remove netty-servlet connector
+/subsystem=messaging/hornetq-server=default/remote-connector=netty-servlet:remove
+
+# Remove the JMS test queue
 jms-queue remove --queue-address=testQueue
 
 # Run the batch commands
