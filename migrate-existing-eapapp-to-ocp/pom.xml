@@ -92,6 +92,7 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!--
 			<dependency>
 				<groupId>org.jboss.bom</groupId>
 				<artifactId>jboss-eap-javaee7</artifactId>
@@ -99,6 +100,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			-->
 		<dependency>
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-7.0</artifactId>
