@@ -444,10 +444,24 @@
                     <authentication>
                         <login-module code="Certificate" flag="required">
                             <module-option name="verifier" value="org.jboss.security.auth.certs.AnyCertVerifier"/>
+			    <module-option name="securityDomain" value="require-certificate"/>
                         </login-module>
                     </authentication>
                     <jsse keystore-password="password" keystore-type="JKS" keystore-url="${jboss.server.base.dir}/server.jks" truststore-password="changeit" truststore-type="JKS" truststore-url="${jboss.server.base.dir}/truststore.jks" client-auth="true"/>
                 </security-domain>
+		<security-domain name="sslCustomSecDomain">
+                    <authentication>
+                        <login-module code="org.jboss.as.security.auth.ExtendedCertificateLoginModule" flag="required" module="ext-cert-login-module">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                            <module-option name="verifier" value="org.jboss.security.auth.certs.AnyCertVerifier"/>
+                            <module-option name="roles" value="webuser"/>
+                            <module-option name="defaultRoles" value="guest"/>
+                            <module-option name="securityDomain" value="sslCustomSecDomain"/>
+                        </login-module>
+                    </authentication>
+                    <jsse keystore-password="password" keystore-url="${jboss.server.base.dir}/server.jks" truststore-password="changeit" truststore-url="${jboss.server.base.dir}/truststore.jks" client-alias="server" client-auth="true"/>
+                </security-domain>
+
 	        <!-- ##KEYCLOAK_SECURITY_DOMAIN## -->
                 <!-- no additional security domains configured --><!-- ##ADDITIONAL_SECURITY_DOMAINS## -->
             </security-domains>
