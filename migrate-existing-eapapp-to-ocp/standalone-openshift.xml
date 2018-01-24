@@ -469,7 +469,7 @@
                 <ssl password="password" certificate-key-file="${jboss.server.base.dir}/server.jks" protocol="TLSv1" verify-client="true" ca-certificate-file="${jboss.server.base.dir}/truststore.jks" ca-certificate-password="changeit"/>
             </connector>
 	    <!-- No HTTPS configuration discovered -->
-            <virtual-server name="default-host" enable-welcome-root="false"/>
+            <virtual-server name="default-host" enable-welcome-root="true"/>
             <valve name="remoteIp" module="org.jboss.as.web" class-name="org.apache.catalina.valves.RemoteIpValve">
                 <param param-name="remoteIpHeader" param-value="X-Forwarded-For" />
                 <param param-name="protocolHeader" param-value="X-Forwarded-Proto" />

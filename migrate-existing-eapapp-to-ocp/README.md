@@ -97,7 +97,7 @@ Run the following set of commands to configure the namespace along with the vari
 8. Create a pamaters file to be used to process the template. A sample file is provided here (named eap64-https-s2i.params) for the eap64-https-s2i
 
 9. Process the template picked using the parameter file created above using the following command
-	`oc process eap64-https-s2i -n openshift --param-file=${WORKING_DIR}/eap64-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
+	`oc process eap64-https-s2i -n openshift --param-file=${WORKING_DIR}/eap64-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
 
 
 Build and deploy the Quickstart to the OCP cluster
@@ -105,20 +105,20 @@ Build and deploy the Quickstart to the OCP cluster
 
 
 1. Deploy the processed template using one of the following two commands.
-	`oc create -f ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
-	`oc apply -f ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
+	`oc create -f ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
+	`oc apply -f ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
 2. create and mount a volume for the keystore.
-	`oc set volume dc/mutual-auth-rs-helloworld-app --add --name=keystore -m ${WORKING_DIR}/server.jks -t secret --secret-name=eap-ks --sub-path=server.jks --default-mode=0777`
+	`oc set volume dc/mutual-auth-rs-helloworld --add --name=keystore -m ${WORKING_DIR}/server.jks -t secret --secret-name=eap-ks --sub-path=server.jks --default-mode=0777`
 3. create and mount a volume for the truststore
-	`oc set volume dc/mutual-auth-rs-helloworld-app --add --name=truststore -m ${WORKING_DIR}/truststore.jks -t secret --secret-name=eap-ts --sub-path=truststore.jks --default-mode=0777`
+	`oc set volume dc/mutual-auth-rs-helloworld --add --name=truststore -m ${WORKING_DIR}/truststore.jks -t secret --secret-name=eap-ts --sub-path=truststore.jks --default-mode=0777`
 4. Create a configmap for using the existing configuration.
 _Note: The consifuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
 A default config has been provided named standalone-openshift.xml
 	`oc create configmap eap-config --from-file=standalone-openshift.xml=${WORKING_DIR}/standalone-openshift.xml`
 5. Create and mount a volume using the configmap created above
-	`c set volume dc/mutual-auth-rs-helloworld-app --add --name=standalone-config --configmap-name=eap-config -m ${WORKING_DIR}/standalone-openshift.xml -t configmap --sub-path=standalone-openshift.xml --default-mode=0777`
+	`oc set volume dc/mutual-auth-rs-helloworld --add --name=standalone-config --configmap-name=eap-config -m ${WORKING_DIR}/standalone-openshift.xml -t configmap --sub-path=standalone-openshift.xml --default-mode=0777`
 6. Update the route created to make sure it matches the route config e.g. TLS passthrough if required...
-	`oc edit route/secure-mutual-auth-rs-helloworld-app`
+	`oc edit route/secure-mutual-auth-rs-helloworld`
 
 
 Access the application 
