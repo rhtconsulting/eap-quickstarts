@@ -97,7 +97,7 @@ Run the following set of commands to configure the namespace along with the vari
 8. Create a pamaters file to be used to process the template. A sample file is provided here (named eap64-https-s2i.params) for the eap64-https-s2i
 
 9. Process the template picked using the parameter file created above using the following command
-	`oc process eap64-https-s2i -n openshift --param-file=${WORKING_DIR}/eap64-https-s2i.params -o json > ${WORKING_DIR}/eap-app.json`
+	`oc process eap64-https-s2i -n openshift --param-file=${WORKING_DIR}/eap64-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
 
 
 Build and deploy the Quickstart to the OCP cluster
@@ -105,8 +105,8 @@ Build and deploy the Quickstart to the OCP cluster
 
 
 1. Deploy the processed template using one of the following two commands.
-	`oc create -f eap-app.json`
-	`oc apply -f eap-app.json`
+	`oc create -f ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
+	`oc apply -f ${WORKING_DIR}/mutual-auth-rs-helloworld-app.json`
 2. create and mount a volume for the keystore.
 	`oc set volume dc/mutual-auth-rs-helloworld-app --add --name=keystore -m ${WORKING_DIR}/server.jks -t secret --secret-name=eap-ks --sub-path=server.jks --default-mode=0777`
 3. create and mount a volume for the truststore
