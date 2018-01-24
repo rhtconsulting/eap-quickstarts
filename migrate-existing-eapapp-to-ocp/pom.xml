@@ -12,6 +12,7 @@
 	<description>Mutual PKI authentication Restful helloworld using JAX-RS</description>
 
 	<repositories>
+	<!--
 		<repository>
 			<id>jboss-enterprise-maven-repository</id>
 			<url>https://maven.repository.redhat.com/ga/</url>
@@ -32,9 +33,21 @@
             <id>jboss-enterprise-maven-repository-ea</id>
             <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
         </repository>
+	-->
+	<repository>
+          <id>jboss-community-repository</id>
+          <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>
+	<!--
 		<pluginRepository>
 			<id>jboss-enterprise-maven-repository</id>
 			<url>https://maven.repository.redhat.com/ga/</url>
@@ -69,6 +82,17 @@
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </pluginRepository>
+	-->
+	 <pluginRepository>
+          <id>jboss-community-plugin-repository</id>
+          <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
 	</pluginRepositories>
 
 
@@ -85,14 +109,21 @@
 
 		<!-- EAP component version management BOM -->
 		<version.jboss.bom.eap>7.0.0.GA</version.jboss.bom.eap>
- 		<version.server.bom>7.1.0.GA</version.server.bom>
-		<version.jboss.spec.javaee.7.0>1.1.0.Final-redhat-3</version.jboss.spec.javaee.7.0>
+ 		<!--<version.server.bom>7.1.0.GA</version.server.bom>
+		<version.jboss.spec.javaee.7.0>1.1.0.Final-redhat-3</version.jboss.spec.javaee.7.0> -->
+		<version.server.bom>11.0.0.Final</version.server.bom>
+		<version.jboss.spec.javaee.7.0>1.1.0.Final</version.jboss.spec.javaee.7.0>
+		<version.jboss.spec.javaee.6.0>1.0.7.Final</version.jboss.spec.javaee.6.0>
+		<version.resteasy.jackson>3.0.15.Final</version.resteasy.jackson>
+		<version.resteasy.jaxrs>3.1.4.Final</version.resteasy.jaxrs>
+		<version.resteasy.jaxb>3.1.4.Final</version.resteasy.jaxb>
+		<version.resteasy.atom>3.1.4.Final</version.resteasy.atom>
 
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!--
+<!--
 			<dependency>
 				<groupId>org.jboss.bom</groupId>
 				<artifactId>jboss-eap-javaee7</artifactId>
@@ -100,7 +131,22 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			-->
+-->
+		<dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
+                <version>${version.jboss.spec.javaee.6.0}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+	    <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>${version.jboss.spec.javaee.7.0}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+	<!--
 		<dependency>
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-7.0</artifactId>
@@ -108,6 +154,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+	
  	<dependency>
                 <groupId>org.jboss.bom</groupId>
                 <artifactId>jboss-eap-javaee7-with-tools</artifactId>
@@ -115,6 +162,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+-->
 		</dependencies>
 	</dependencyManagement>
 
@@ -147,18 +195,21 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${version.resteasy.jackson}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${version.resteasy.jaxrs}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-atom-provider</artifactId>
+			<version>${version.resteasy.atom}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -171,6 +222,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>${version.resteasy.jaxb}</version>
 		</dependency>
 
 
