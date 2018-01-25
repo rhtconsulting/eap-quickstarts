@@ -1,4 +1,5 @@
 <jboss-web>
+   <context-root>/</context-root>
    <!-- <security-domain>require-certificate</security-domain>-->
     <security-domain>sslCustomSecDomain</security-domain>
 </jboss-web>

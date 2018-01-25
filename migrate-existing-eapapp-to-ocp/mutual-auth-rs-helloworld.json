@@ -12,7 +12,7 @@
                 },
                 "labels": {
                     "application": "mutual-auth-rs-helloworld",
-                    "template": "eap64-https-s2i",
+                    "template": "eap71-https-s2i",
                     "xpaas": "1.4.7"
                 },
                 "name": "secure-mutual-auth-rs-helloworld"
@@ -39,7 +39,7 @@
                 },
                 "labels": {
                     "application": "mutual-auth-rs-helloworld",
-                    "template": "eap64-https-s2i",
+                    "template": "eap71-https-s2i",
                     "xpaas": "1.4.7"
                 },
                 "name": "secure-mutual-auth-rs-helloworld"
@@ -60,7 +60,7 @@
             "metadata": {
                 "labels": {
                     "application": "mutual-auth-rs-helloworld",
-                    "template": "eap64-https-s2i",
+                    "template": "eap71-https-s2i",
                     "xpaas": "1.4.7"
                 },
                 "name": "mutual-auth-rs-helloworld"
@@ -72,7 +72,7 @@
             "metadata": {
                 "labels": {
                     "application": "mutual-auth-rs-helloworld",
-                    "template": "eap64-https-s2i",
+                    "template": "eap71-https-s2i",
                     "xpaas": "1.4.7"
                 },
                 "name": "mutual-auth-rs-helloworld"
@@ -87,7 +87,7 @@
                 "source": {
                     "contextDir": "migrate-existing-eapapp-to-ocp",
                     "git": {
-                        "ref": "master",
+                        "ref": "eap7-ocp-deployment",
                         "uri": "https://github.com/rhtconsulting/eap-quickstarts"
                     },
                     "type": "Git"
@@ -107,7 +107,7 @@
                         "forcePull": true,
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "jboss-eap64-openshift:1.6",
+                            "name": "jboss-eap71-openshift:TP",
                             "namespace": "openshift"
                         }
                     },
@@ -116,13 +116,13 @@
                 "triggers": [
                     {
                         "github": {
-                            "secret": "OIGRU8jO"
+                            "secret": "8jAc1VUb"
                         },
                         "type": "GitHub"
                     },
                     {
                         "generic": {
-                            "secret": "66S5vKKR"
+                            "secret": "qpoKLtAD"
                         },
                         "type": "Generic"
                     },
@@ -142,7 +142,7 @@
             "metadata": {
                 "labels": {
                     "application": "mutual-auth-rs-helloworld",
-                    "template": "eap64-https-s2i",
+                    "template": "eap71-https-s2i",
                     "xpaas": "1.4.7"
                 },
                 "name": "mutual-auth-rs-helloworld"
@@ -200,15 +200,15 @@
                                         "value": "password"
                                     },
                                     {
-                                        "name": "HORNETQ_CLUSTER_PASSWORD",
-                                        "value": "eYPQJhII"
+                                        "name": "MQ_CLUSTER_PASSWORD",
+                                        "value": "IMvw7WJ3"
                                     },
                                     {
-                                        "name": "HORNETQ_QUEUES",
+                                        "name": "MQ_QUEUES",
                                         "value": ""
                                     },
                                     {
-                                        "name": "HORNETQ_TOPICS",
+                                        "name": "MQ_TOPICS",
                                         "value": ""
                                     },
                                     {
@@ -233,7 +233,7 @@
                                     },
                                     {
                                         "name": "JGROUPS_CLUSTER_PASSWORD",
-                                        "value": "IeicY6kT"
+                                        "value": "nqioXYBx"
                                     },
                                     {
                                         "name": "AUTO_DEPLOY_EXPLODED",
@@ -297,8 +297,8 @@
                                 ]
                             }
                         ],
-                        "serviceAccountName": "eap-service-account",
-                        "terminationGracePeriodSeconds": 60,
+                        "serviceAccountName": "eap7-service-account",
+                        "terminationGracePeriodSeconds": 75,
                         "volumes": [
                             {
                                 "name": "eap-keystore-volume",
