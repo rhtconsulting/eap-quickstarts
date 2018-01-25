@@ -83,7 +83,8 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:1.5">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="ALL"/>
+               <!-- <level name="INFO"/>-->
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
