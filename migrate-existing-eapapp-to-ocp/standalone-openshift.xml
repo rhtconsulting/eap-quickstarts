@@ -114,8 +114,8 @@
                 <level name="WARN"/>
             </logger>
             <root-logger>
-               <!-- <level name="INFO"/>-->
-                <level name="ALL"/>
+               <level name="INFO"/>
+               <!-- <level name="ALL"/>-->
                 <handlers>
                     <handler name="CONSOLE"/>
                 </handlers>
