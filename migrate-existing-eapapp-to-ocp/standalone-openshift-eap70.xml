@@ -103,6 +103,13 @@
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
             </console-handler>
+	    <async-handler name="ASYNC">
+                <queue-length value="512"/>
+                <overflow-action value="block"/>
+                <subhandlers>
+                    <handler name="CONSOLE"/>
+                </subhandlers>
+            </async-handler>
             <logger category="com.arjuna">
                 <level name="WARN"/>
 	</logger>
@@ -116,7 +123,8 @@
                <level name="INFO"/>
                <!-- <level name="ALL"/>-->
                 <handlers>
-                    <handler name="CONSOLE"/>
+                    <!--<handler name="CONSOLE"/>-->
+		    <handler name="ASYNC"/>
                 </handlers>
             </root-logger>
             <formatter name="COLOR-PATTERN">
@@ -470,7 +478,7 @@
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
             <object-store relative-to="jboss.server.data.dir"/>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:undertow:3.1">
+        <subsystem xmlns="urn:jboss:domain:undertow:3.0">
             <buffer-cache name="default"/>
             <server name="default-server">
                 <ajp-listener name="ajp" socket-binding="ajp"/>
