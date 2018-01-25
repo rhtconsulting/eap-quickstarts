@@ -46,11 +46,17 @@
             },
             "spec": {
                 "host": "",
+                "port": {
+                   "targetPort": 8443
+                },
                 "tls": {
-                    "termination": "passthrough"
+                    "termination": "passthrough",
+                    "insecureEdgeTerminationPolicy": "Redirect"
                 },
                 "to": {
-                    "name": "secure-mutual-auth-rs-helloworld"
+                    "kind": "Service",
+                    "name": "secure-mutual-auth-rs-helloworld",
+                    "weight": 100
                 }
             }
         },
