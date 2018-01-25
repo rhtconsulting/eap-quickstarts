@@ -9,18 +9,18 @@
     <dependencies>
         <module name="org.jboss.as.security">
 		<imports>
-			<include path="wildfly-security-7.0.0.GA-redhat-2.jar" />
+			<include path="jboss-as-security-7.5.0.Final-redhat-21.jar" />
 		</imports>
 	</module>
 	<module name="org.picketbox">
                 <imports>
-                        <include path="picketbox-4.9.6.Final-redhat-1.jar" />
+                        <include path="picketbox-4.1.1.Final-redhat-1.jar" />
                 </imports>
 		<imports>
-                        <include path="picketbox-infinispan-4.9.6.Final-redhat-1.jar" />
+                        <include path="picketbox-infinispan-4.1.1.Final-redhat-1.jar" />
                 </imports>
 		<imports>
-                        <include path="picketbox-commons-1.0.0.final-redhat-4.jar" />
+                        <include path="picketbox-commons-1.0.0.final-redhat-3.jar" />
                 </imports>
 
         </module>
