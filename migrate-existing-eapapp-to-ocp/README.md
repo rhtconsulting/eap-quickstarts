@@ -44,7 +44,7 @@ Use of OCP_CLUSTER_URL , GUEST_EAP_HOME and WORKING_DIR
 ---------------
 
 In the following instructions, replace `OCP_CLUSTER_FQDN` with the actual path to your your OCP cluster master or load balancer.
-Replace `GUEST_EAP_HOME` with the EAP HOME path with the container, for  the eap64-https-s2i image it is /opt/eap 
+Replace `GUEST_EAP_HOME` with the EAP HOME path with the container, for  the eap70-https-s2i image it is /opt/eap 
 Also replace `WORKING_DIR` with the path to where you have checkout this project or at least where you ar storing your working artifacts
 
 Generate the necessary keystores and truststores 
@@ -70,13 +70,13 @@ Configure the namespace for the deployment
 Run the following set of commands to configure the namespace along with the various permissions required. For more information consult https://access.redhat.com/documentation/en/red-hat-xpaas/0/openshift-primer/openshift-primer#install_the_openshift_enterprise_package and https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_jboss_enterprise_application_platform_for_openshift/index#how_does_jboss_eap_work_on_openshift for mode details on JBoss on OCP. 
 
 1. Create the project/namespace running the following command.
- 	`oc new-project eap6-ocp-deployment`
+ 	`oc new-project eap7-ocp-deployment`
 
 2. Create a service account if required by the template to be used to deploy app the application using the followin command.
-	`oc create serviceaccount eap-service-account -n $(oc project -q)`
+	`oc create serviceaccount eap7-service-account -n $(oc project -q)`
 
 3. Grant Kubernetes REST API view access to the project created above to the service account using the following command .
-	`oc adm policy add-role-to-user view system:serviceaccount:$(oc project -q):eap-service-account -n $(oc project -q)`
+	`oc adm policy add-role-to-user view system:serviceaccount:$(oc project -q):eap7-service-account -n $(oc project -q)`
 
 4. Create secrets for necessary security artifacts e.g. keystore, truststore using the following commands. 
 	`oc secrets new eap-ks ${WORKING_DIR}/server.jks`
@@ -85,17 +85,17 @@ Run the following set of commands to configure the namespace along with the vari
 5. Create needed optional secrets if template being used requires them e.g. jgroup jceks keystore and others
 	`oc secrets new jg-ks ${WORKING_DIR}/jgroups.jceks`
 
-6. Use one of the existing templates (eap71-https-s2i, eap71-basic-s2i, eap64-https-s2i, eap64-basic-s2i) as a starting point to create your own
+6. Use one of the existing templates (eap71-https-s2i, eap71-basic-s2i, eap70-https-s2i, eap64-basic-s2i) as a starting point to create your own
 	`oc get templates -n openshift | grep eap`
 
-7. Describe the existing template you picked above (using eap64-https-s2i as starting point or base here)
-	`oc describe template eap64-https-s2i -n openshift`
+7. Describe the existing template you picked above (using eap70-https-s2i as starting point or base here)
+	`oc describe template eap70-https-s2i -n openshift`
 
-8. Create a pamaters file to be used to process the template. A sample file is provided here (named eap64-https-s2i.params) for the eap64-https-s2i
+8. Create a pamaters file to be used to process the template. A sample file is provided here (named eap70-https-s2i.params) for the eap70-https-s2i
 
 9. Process the template picked using the parameter file created above using the following command
-	`oc process eap64-https-s2i -n openshift --param-file=${WORKING_DIR}/eap64-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
-
+	`oc process eap70-https-s2i -n openshift --param-file=${WORKING_DIR}/eap70-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
+_Note: The eap70-https-s2i by default points to the jboss-eap70-openshift:1.6 image but you will need to downgrade it the 1.3 tag because the other are missing lot of libraries. For example some modules folders are empty when they were supposed to contain libraries and module.xml config. 
 
 Build and deploy the Quickstart to the OCP cluster
 -------------------------
@@ -134,12 +134,10 @@ Access the application
 
 The application will be running at the following URL <https://ServiceName-Namespace.AppDomainInCluster/app-context>.
 Where ServiceName is the name of the service the route was created for above (e.g. secure-mutual-auth-rs-helloworld, mutual-auth-rs-test)
-Namespace is the project name in the OCP cluster (e.g. eap6-ocp-deployment)
+Namespace is the project name in the OCP cluster (e.g. eap7-ocp-deployment)
 AppDomainInCluster is the wildcard app domain name in the OCP cluster (e.g. apps.1aec.example.opentlc.com)
 app-context is the context root of the application (e.g. mutualauth-rs-helloworld)
 
-example URL would look like https://secure-mutual-auth-rs-helloworld-eap6-ocp-deployment.apps.1aec.example.opentlc.com/mutualauth-rs-helloworld
+example URL would look like https://secure-mutual-auth-rs-helloworld-eap7-ocp-deployment.apps.1aec.example.opentlc.com/mutualauth-rs-helloworld
 
 _Note: You can change the URL by deploying your application to the root context and in that case you will need to make the appropriate adjustments to the standalone configuration used to deploy the aplication.
-
-
