@@ -1,6 +1,6 @@
 APPLICATION_NAME=mutual-auth-rs-helloworld
 SOURCE_REPOSITORY_URL=https://github.com/rhtconsulting/eap-quickstarts
-SOURCE_REPOSITORY_REF=master
+SOURCE_REPOSITORY_REF=eap7-ocp-deployment
 CONTEXT_DIR="migrate-existing-eapapp-to-ocp"
 SERVICE_ACCOUNT_NAME=eap-service-account
 HTTPS_SECRET=eap-ks
