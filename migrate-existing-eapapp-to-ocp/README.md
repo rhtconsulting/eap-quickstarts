@@ -141,3 +141,4 @@ app-context is the context root of the application (e.g. mutualauth-rs-helloworl
 example URL would look like https://secure-mutual-auth-rs-helloworld-eap7-ocp-deployment.apps.1aec.example.opentlc.com/mutualauth-rs-helloworld
 
 _Note: You can change the URL by deploying your application to the root context and in that case you will need to make the appropriate adjustments to the standalone configuration used to deploy the aplication.
+If after deploying the app and exposing the route you get a 403 error code try a different browser. I saw this with the EAP7 version of the deployment on FF but it works fine in chrome.
