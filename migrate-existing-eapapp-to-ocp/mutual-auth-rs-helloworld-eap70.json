@@ -1,0 +1,345 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The web server's https port."
+                },
+                "labels": {
+                    "application": "mutual-auth-rs-helloworld",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "secure-mutual-auth-rs-helloworld"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8443,
+                        "targetPort": 8443
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "mutual-auth-rs-helloworld"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "id": "mutual-auth-rs-helloworld-https",
+            "kind": "Route",
+            "metadata": {
+                "annotations": {
+                    "description": "Route for application's https service."
+                },
+                "labels": {
+                    "application": "mutual-auth-rs-helloworld",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "secure-mutual-auth-rs-helloworld"
+            },
+	    "spec": {
+                "host": "",
+                "port": {
+                   "targetPort": 8443
+                },
+                "tls": {
+                    "termination": "passthrough",
+                    "insecureEdgeTerminationPolicy": "Redirect"
+                },
+                "to": {
+                    "kind": "Service",
+                    "name": "secure-mutual-auth-rs-helloworld",
+                    "weight": 100
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "ImageStream",
+            "metadata": {
+                "labels": {
+                    "application": "mutual-auth-rs-helloworld",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "mutual-auth-rs-helloworld"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "BuildConfig",
+            "metadata": {
+                "labels": {
+                    "application": "mutual-auth-rs-helloworld",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "mutual-auth-rs-helloworld"
+            },
+            "spec": {
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "mutual-auth-rs-helloworld:latest"
+                    }
+                },
+                "source": {
+                    "contextDir": "migrate-existing-eapapp-to-ocp",
+                    "git": {
+                        "ref": "eap7-ocp-deployment",
+                        "uri": "https://github.com/rhtconsulting/eap-quickstarts"
+                    },
+                    "type": "Git"
+                },
+                "strategy": {
+                    "sourceStrategy": {
+                        "env": [
+                            {
+                                "name": "MAVEN_MIRROR_URL",
+                                "value": ""
+                            },
+                            {
+                                "name": "ARTIFACT_DIR",
+                                "value": ""
+                            }
+                        ],
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "jboss-eap70-openshift:1.6",
+                            "namespace": "openshift"
+                        }
+                    },
+                    "type": "Source"
+                },
+                "triggers": [
+                    {
+                        "github": {
+                            "secret": "dh3mfllq"
+                        },
+                        "type": "GitHub"
+                    },
+                    {
+                        "generic": {
+                            "secret": "JGLGy3jE"
+                        },
+                        "type": "Generic"
+                    },
+                    {
+                        "imageChange": {},
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "labels": {
+                    "application": "mutual-auth-rs-helloworld",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "mutual-auth-rs-helloworld"
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "mutual-auth-rs-helloworld"
+                },
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "application": "mutual-auth-rs-helloworld",
+                            "deploymentConfig": "mutual-auth-rs-helloworld"
+                        },
+                        "name": "mutual-auth-rs-helloworld"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_LABELS",
+                                        "value": "application=mutual-auth-rs-helloworld"
+                                    },
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE_DIR",
+                                        "value": "/etc/eap-secret-volume"
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE",
+                                        "value": "server.jks"
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE_TYPE",
+                                        "value": "JKS"
+                                    },
+                                    {
+                                        "name": "HTTPS_NAME",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "HTTPS_PASSWORD",
+                                        "value": "password"
+                                    },
+                                    {
+                                        "name": "MQ_CLUSTER_PASSWORD",
+                                        "value": "mQsLFtAh"
+                                    },
+                                    {
+                                        "name": "MQ_QUEUES",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "MQ_TOPICS",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_SECRET",
+                                        "value": "jg-ks"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_KEYSTORE_DIR",
+                                        "value": "/etc/jgroups-encrypt-secret-volume"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_KEYSTORE",
+                                        "value": "jgroups.jceks"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_NAME",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_PASSWORD",
+                                        "value": "changeit"
+                                    },
+                                    {
+                                        "name": "JGROUPS_CLUSTER_PASSWORD",
+                                        "value": "eFMyTHm7"
+                                    },
+                                    {
+                                        "name": "AUTO_DEPLOY_EXPLODED",
+                                        "value": "false"
+                                    }
+                                ],
+                                "image": "mutual-auth-rs-helloworld",
+                                "imagePullPolicy": "Always",
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/livenessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "name": "mutual-auth-rs-helloworld",
+                                "ports": [
+                                    {
+                                        "containerPort": 8778,
+                                        "name": "jolokia",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8080,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8443,
+                                        "name": "https",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8888,
+                                        "name": "ping",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/etc/eap-secret-volume",
+                                        "name": "eap-keystore-volume",
+                                        "readOnly": true
+                                    },
+                                    {
+                                        "mountPath": "/etc/jgroups-encrypt-secret-volume",
+                                        "name": "eap-jgroups-keystore-volume",
+                                        "readOnly": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "serviceAccountName": "eap7-service-account",
+                        "terminationGracePeriodSeconds": 75,
+                        "volumes": [
+                            {
+                                "name": "eap-keystore-volume",
+                                "secret": {
+                                    "secretName": "eap-ks"
+                                }
+                            },
+                            {
+                                "name": "eap-jgroups-keystore-volume",
+                                "secret": {
+                                    "secretName": "jg-ks"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "mutual-auth-rs-helloworld"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "mutual-auth-rs-helloworld:latest"
+                            }
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        }
+    ]
+}
