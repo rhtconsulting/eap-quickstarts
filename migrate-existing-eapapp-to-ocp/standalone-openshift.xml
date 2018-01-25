@@ -479,7 +479,7 @@
 		<https-listener name="https" socket-binding="https" enabled="true" secure="true" security-realm="SSLRealm" verify-client="REQUIRED" enabled-protocols="TLSv1.1,TLSv1.2" enable-http2="true"/>
 		<!--<https-listener name="https" socket-binding="https" ssl-context="server-SecCtx" enable-http2="true"/>-->
                 <host name="default-host" alias="localhost">
-                    <!--<location name="/" handler="welcome-content"/>-->
+                    <location name="/" handler="welcome-content"/>
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
 		    <filter-ref name="requestDumperExpression"/>
@@ -491,7 +491,7 @@
                 <websockets/>
             </servlet-container>
             <handlers>
-               <!-- <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>-->
+               <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
             </handlers>
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="JBoss-EAP/7"/>
