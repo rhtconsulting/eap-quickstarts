@@ -39,11 +39,6 @@ An HTML5 compatible browser such as Chrome, Safari 5+, Firefox 5+, or IE 9+ is r
 
 With the prerequisites out of the way, you're ready to build and deploy.
 
-Start with a Clean JBoss EAP Install
---------------------------------------
-
-It is important to start with a clean version of JBoss EAP before testing this quickstart. Be sure to unzip or install a fresh JBoss EAP instance. 
-
 
 Use of OCP_CLUSTER_URL , GUEST_EAP_HOME and WORKING_DIR
 ---------------
@@ -80,7 +75,7 @@ Run the following set of commands to configure the namespace along with the vari
 2. Create a service account if required by the template to be used to deploy app the application using the followin command.
 	`oc create serviceaccount eap-service-account -n $(oc project -q)`
 
-3. Grant view access to the project created above to the service account using the following command.
+3. Grant Kubernetes REST API view access to the project created above to the service account using the following command .
 	`oc adm policy add-role-to-user view system:serviceaccount:$(oc project -q):eap-service-account -n $(oc project -q)`
 
 4. Create secrets for necessary security artifacts e.g. keystore, truststore using the following commands. 
@@ -114,7 +109,7 @@ Build and deploy the Quickstart to the OCP cluster
 3. create and mount a volume for the truststore
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=truststore -m ${GUEST_EAP_HOME}/standalone/truststore.jks -t secret --secret-name=eap-ts --sub-path=truststore.jks --default-mode=0664`
 4. Create a configmap for using the existing configuration.
-_Note: The consifuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
+_Note: The configuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
 A default config has been provided named standalone-openshift.xml
 	`oc create configmap eap-config --from-file=standalone-openshift.xml=${WORKING_DIR}/standalone-openshift.xml`
 5. Create and mount a volume using the configmap created above
@@ -125,13 +120,26 @@ A default config has been provided named standalone-openshift.xml
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=custom-login-module --configmap-name=eap-custom-module -m ${GUEST_EAP_HOME}/modules/ext-cert-login-module/main -t configmap --default-mode=0777`
 8. Update the route created to make sure it matches the route config e.g. TLS passthrough if required...
 	`oc edit route/secure-mutual-auth-rs-helloworld`
+9. Optionally if you want you can scale your deployment as follows
+	`oc scale dc mutual-auth-rs-helloworld --replicas=3`
+
+10. Optionally if you want to cluster the eap instances in the scaled up deployment from above make to set the following environment variables
+	`oc set env dc/mutual-auth-rs-helloworld --env=OPENSHIFT_KUBE_PING_NAMESPACE=$(oc project -q)`
+	`oc set env dc/mutual-auth-rs-helloworld --env=OPENSHIFT_KUBE_PING_LABELS=app=mutual-auth-rs-helloworld`
+_Note: KUBE_PING is the default JGroup protocol being used in the standalone-openshift.xml provided, which you can change to use another one like DNS_PING, in which case you will have to change the two environment variables above to match the JGroup protocol (e.g. for DNS_PING you will be setting OPENSHIFT_DNS_PING_NAMESPACE and OPENSHIFT_DNS_PING_LABELS)
 
 
 Access the application 
 ---------------------
 
-The application will be running at the following URL <https://>.
+The application will be running at the following URL <https://ServiceName-Namespace.AppDomainInCluster/app-context>.
+Where ServiceName is the name of the service the route was created for above (e.g. secure-mutual-auth-rs-helloworld, mutual-auth-rs-test)
+Namespace is the project name in the OCP cluster (e.g. eap6-ocp-deployment)
+AppDomainInCluster is the wildcard app domain name in the OCP cluster (e.g. apps.1aec.example.opentlc.com)
+app-context is the context root of the application (e.g. mutualauth-rs-helloworld)
 
+example URL would look like https://secure-mutual-auth-rs-helloworld-eap6-ocp-deployment.apps.1aec.example.opentlc.com/mutualauth-rs-helloworld
 
+_Note: You can change the URL by deploying your application to the root context and in that case you will need to make the appropriate adjustments to the standalone configuration used to deploy the aplication.
 
 
