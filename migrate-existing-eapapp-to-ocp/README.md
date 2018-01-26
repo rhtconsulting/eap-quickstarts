@@ -116,8 +116,9 @@ A default config has been provided named standalone-openshift.xml
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=standalone-config --configmap-name=eap-config -m ${GUEST_EAP_HOME}/standalone/configuration/standalone-openshift.xml -t configmap --sub-path=standalone-openshift.xml --default-mode=0664`
 6. Create a config map for the custom login module 
 	`oc create configmap eap-custom-module --from-file=module.xml=${WORKING_DIR}/ext-cert-login-module/main/module.xml --from-file=extended-certificate-login-module.jar=${WORKING_DIR}/ext-cert-login-module/main/extended-certificate-login-module.jar`
-7. Create and mpunt a volume for using the configmap created above
+7. Create and mount a volume for using the configmap created above
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=custom-login-module --configmap-name=eap-custom-module -m ${GUEST_EAP_HOME}/modules/ext-cert-login-module/main -t configmap --default-mode=0777`
+_Note: !!! Step 6 and 7 from above are not required because a modules directory was added to the source repo and was built and deployed into the image. You will only need to do this if for whatever reason you don't want to build the modules into the image or if the module config changes between environments. However, there are still few things to work out when using the configmap approach. EAP in the image is not able to process the libraries deployed via configmap (I am suspecting that it is because of the way the items are mounted into the directory i.e. as symlink from ../data/...). 
 8. Update the route created to make sure it matches the route config e.g. TLS passthrough if required...
 	`oc edit route/secure-mutual-auth-rs-helloworld`
 9. Optionally if you want you can scale your deployment as follows
