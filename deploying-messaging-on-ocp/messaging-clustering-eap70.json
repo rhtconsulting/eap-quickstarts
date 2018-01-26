@@ -1,0 +1,391 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The web server's http port."
+                },
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "messaging-clustering"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "messaging-clustering"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The web server's https port."
+                },
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "secure-messaging-clustering"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8443,
+                        "targetPort": 8443
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "messaging-clustering"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "id": "messaging-clustering-http",
+            "kind": "Route",
+            "metadata": {
+                "annotations": {
+                    "description": "Route for application's http service."
+                },
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "messaging-clustering"
+            },
+            "spec": {
+                "host": "",
+                "to": {
+                    "name": "messaging-clustering"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "id": "messaging-clustering-https",
+            "kind": "Route",
+            "metadata": {
+                "annotations": {
+                    "description": "Route for application's https service."
+                },
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "secure-messaging-clustering"
+            },
+            "spec": {
+                "host": "",
+                "port": {
+                   "targetPort": 8443
+                },
+                "tls": {
+                    "termination": "passthrough",
+                    "insecureEdgeTerminationPolicy": "Redirect"
+                },
+                "to": {
+                    "name": "secure-messaging-clustering"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "ImageStream",
+            "metadata": {
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "messaging-clustering"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "BuildConfig",
+            "metadata": {
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "messaging-clustering"
+            },
+            "spec": {
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "messaging-clustering:latest"
+                    }
+                },
+                "source": {
+                    "contextDir": "helloworld-mdb",
+                    "git": {
+                        "ref": "7.0.0.GA",
+                        "uri": "https://github.com/jboss-developer/jboss-eap-quickstarts"
+                    },
+                    "type": "Git"
+                },
+                "strategy": {
+                    "sourceStrategy": {
+                        "env": [
+                            {
+                                "name": "MAVEN_MIRROR_URL",
+                                "value": "https://repository.jboss.org/nexus/content/groups/public/"
+                            },
+                            {
+                                "name": "ARTIFACT_DIR",
+                                "value": ""
+                            }
+                        ],
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "jboss-eap70-openshift:1.3",
+                            "namespace": "openshift"
+                        }
+                    },
+                    "type": "Source"
+                },
+                "triggers": [
+                    {
+                        "github": {
+                            "secret": "1xMR3YTR"
+                        },
+                        "type": "GitHub"
+                    },
+                    {
+                        "generic": {
+                            "secret": "FVd1tLAP"
+                        },
+                        "type": "Generic"
+                    },
+                    {
+                        "imageChange": {},
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "labels": {
+                    "application": "messaging-clustering",
+                    "template": "eap70-https-s2i",
+                    "xpaas": "1.4.7"
+                },
+                "name": "messaging-clustering"
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "messaging-clustering"
+                },
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "application": "messaging-clustering",
+                            "deploymentConfig": "messaging-clustering"
+                        },
+                        "name": "messaging-clustering"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_LABELS",
+                                        "value": "application=messaging-clustering"
+                                    },
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE_DIR",
+                                        "value": "/etc/eap-secret-volume"
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE",
+                                        "value": "server.jks"
+                                    },
+                                    {
+                                        "name": "HTTPS_KEYSTORE_TYPE",
+                                        "value": "JKS"
+                                    },
+                                    {
+                                        "name": "HTTPS_NAME",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "HTTPS_PASSWORD",
+                                        "value": "password"
+                                    },
+                                    {
+                                        "name": "MQ_CLUSTER_PASSWORD",
+                                        "value": "wlNtCt2t"
+                                    },
+                                    {
+                                        "name": "MQ_QUEUES",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "MQ_TOPICS",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_SECRET",
+                                        "value": "jg-ks"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_KEYSTORE_DIR",
+                                        "value": "/etc/jgroups-encrypt-secret-volume"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_KEYSTORE",
+                                        "value": "jgroups.jceks"
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_NAME",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "JGROUPS_ENCRYPT_PASSWORD",
+                                        "value": "changeit"
+                                    },
+                                    {
+                                        "name": "JGROUPS_CLUSTER_PASSWORD",
+                                        "value": "f6f1V1Y0"
+                                    },
+                                    {
+                                        "name": "AUTO_DEPLOY_EXPLODED",
+                                        "value": "false"
+                                    }
+                                ],
+                                "image": "messaging-clustering",
+                                "imagePullPolicy": "Always",
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/livenessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "name": "messaging-clustering",
+                                "ports": [
+                                    {
+                                        "containerPort": 8778,
+                                        "name": "jolokia",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8080,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8443,
+                                        "name": "https",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8888,
+                                        "name": "ping",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/etc/eap-secret-volume",
+                                        "name": "eap-keystore-volume",
+                                        "readOnly": true
+                                    },
+                                    {
+                                        "mountPath": "/etc/jgroups-encrypt-secret-volume",
+                                        "name": "eap-jgroups-keystore-volume",
+                                        "readOnly": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "serviceAccountName": "eap7-service-account",
+                        "terminationGracePeriodSeconds": 75,
+                        "volumes": [
+                            {
+                                "name": "eap-keystore-volume",
+                                "secret": {
+                                    "secretName": "eap-ks"
+                                }
+                            },
+                            {
+                                "name": "eap-jgroups-keystore-volume",
+                                "secret": {
+                                    "secretName": "jg-ks"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "messaging-clustering"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "messaging-clustering:latest"
+                            }
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        }
+    ]
+}

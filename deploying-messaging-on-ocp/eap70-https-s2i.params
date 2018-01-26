@@ -1,0 +1,15 @@
+APPLICATION_NAME=messaging-clustering
+SOURCE_REPOSITORY_URL=https://github.com/jboss-developer/jboss-eap-quickstarts
+#SOURCE_REPOSITORY_REF=7.1
+SOURCE_REPOSITORY_REF=7.0.0.GA
+CONTEXT_DIR="helloworld-mdb"
+#CONTEXT_DIR="messaging-clustering-singleton"
+SERVICE_ACCOUNT_NAME=eap7mc-service-account
+HTTPS_SECRET=eap-ks
+HTTPS_KEYSTORE=server.jks
+HTTPS_KEYSTORE_TYPE=JKS
+HTTPS_PASSWORD=password
+JGROUPS_ENCRYPT_SECRET=jg-ks
+JGROUPS_ENCRYPT_KEYSTORE=jgroups.jceks
+JGROUPS_ENCRYPT_PASSWORD=changeit
+SERVICE_ACCOUNT_NAME=eap7-service-account
