@@ -78,10 +78,12 @@ Run the following set of commands to configure the namespace along with the vari
 3. Grant Kubernetes REST API view access to the project created above to the service account using the following command .
 	`oc adm policy add-role-to-user view system:serviceaccount:$(oc project -q):eap7-service-account -n $(oc project -q)`
 
+_Note: The above Kube REST API permissions are requried for clustering to work. 
+
 4. Create secrets for necessary security artifacts e.g. keystore, truststore using the following commands. 
 	`oc secrets new eap-ks ${WORKING_DIR}/server.jks`
-
 	`oc secrets new eap-ts ${WORKING_DIR}/truststore.jks`
+	
 5. Create needed optional secrets if template being used requires them e.g. jgroup jceks keystore and others
 	`oc secrets new jg-ks ${WORKING_DIR}/jgroups.jceks`
 
@@ -95,6 +97,7 @@ Run the following set of commands to configure the namespace along with the vari
 
 9. Process the template picked using the parameter file created above using the following command
 	`oc process eap70-https-s2i -n openshift --param-file=${WORKING_DIR}/eap70-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
+
 _Note: The eap70-https-s2i by default points to the jboss-eap70-openshift:1.6 image but you will need to downgrade it the 1.3 tag because the other are missing lot of libraries. For example some modules folders are empty when they were supposed to contain libraries and module.xml config. 
 
 Build and deploy the Quickstart to the OCP cluster
@@ -104,29 +107,40 @@ Build and deploy the Quickstart to the OCP cluster
 1. Deploy the processed template using one of the following two commands.
 	`oc create -f ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
 	`oc apply -f ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
+	
 2. create and mount a volume for the keystore.
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=keystore -m ${GUEST_EAP_HOME}/standalone/server.jks -t secret --secret-name=eap-ks --sub-path=server.jks --default-mode=0664`
+	
 3. create and mount a volume for the truststore
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=truststore -m ${GUEST_EAP_HOME}/standalone/truststore.jks -t secret --secret-name=eap-ts --sub-path=truststore.jks --default-mode=0664`
+	
 4. Create a configmap for using the existing configuration.
+
 _Note: The configuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
 A default config has been provided named standalone-openshift.xml
 	`oc create configmap eap-config --from-file=standalone-openshift.xml=${WORKING_DIR}/standalone-openshift.xml`
+	
 5. Create and mount a volume using the configmap created above
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=standalone-config --configmap-name=eap-config -m ${GUEST_EAP_HOME}/standalone/configuration/standalone-openshift.xml -t configmap --sub-path=standalone-openshift.xml --default-mode=0664`
+	
 6. Create a config map for the custom login module 
 	`oc create configmap eap-custom-module --from-file=module.xml=${WORKING_DIR}/ext-cert-login-module/main/module.xml --from-file=extended-certificate-login-module.jar=${WORKING_DIR}/ext-cert-login-module/main/extended-certificate-login-module.jar`
+	
 7. Create and mount a volume for using the configmap created above
 	`oc set volume dc/mutual-auth-rs-helloworld --add --name=custom-login-module --configmap-name=eap-custom-module -m ${GUEST_EAP_HOME}/modules/ext-cert-login-module/main -t configmap --default-mode=0777`
+
 _Note: !!! Step 6 and 7 from above are not required because a modules directory was added to the source repo and was built and deployed into the image. You will only need to do this if for whatever reason you don't want to build the modules into the image or if the module config changes between environments. However, there are still few things to work out when using the configmap approach. EAP in the image is not able to process the libraries deployed via configmap (I am suspecting that it is because of the way the items are mounted into the directory i.e. as symlink from ../data/...). 
+
 8. Update the route created to make sure it matches the route config e.g. TLS passthrough if required...
 	`oc edit route/secure-mutual-auth-rs-helloworld`
+	
 9. Optionally if you want you can scale your deployment as follows
 	`oc scale dc mutual-auth-rs-helloworld --replicas=3`
 
 10. Optionally if you want to cluster the eap instances in the scaled up deployment from above make to set the following environment variables
 	`oc set env dc/mutual-auth-rs-helloworld --env=OPENSHIFT_KUBE_PING_NAMESPACE=$(oc project -q)`
 	`oc set env dc/mutual-auth-rs-helloworld --env=OPENSHIFT_KUBE_PING_LABELS=app=mutual-auth-rs-helloworld`
+
 _Note: KUBE_PING is the default JGroup protocol being used in the standalone-openshift.xml provided, which you can change to use another one like DNS_PING, in which case you will have to change the two environment variables above to match the JGroup protocol (e.g. for DNS_PING you will be setting OPENSHIFT_DNS_PING_NAMESPACE and OPENSHIFT_DNS_PING_LABELS)
 
 
