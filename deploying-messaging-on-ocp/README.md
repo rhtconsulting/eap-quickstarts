@@ -98,23 +98,31 @@ Build and deploy the Quickstart to the OCP cluster
 1. Deploy the processed template using one of the following two commands.
 	`oc create -f ${WORKING_DIR}/messaging-clustering.json`
 	`oc apply -f ${WORKING_DIR}/messaging-clustering.json`
+	
 2. create and mount a volume for the keystore.
 	`oc set volume dc/messaging-clustering --add --name=keystore -m ${GUEST_EAP_HOME}/standalone/server.jks -t secret --secret-name=eap-ks --sub-path=server.jks --default-mode=0664`
+
 3. create and mount a volume for the truststore
 	`oc set volume dc/messaging-clustering --add --name=truststore -m ${GUEST_EAP_HOME}/standalone/truststore.jks -t secret --secret-name=eap-ts --sub-path=truststore.jks --default-mode=0664`
+
 4. Optionally Create an environment variable to control maven build 
 	`oc set env bc/messaging-clustering MAVEN_ARGS_APPEND=-X`
+
 5. Set the Messaging cluster password through an environment variable for the deployment config
 	`oc set env dc/messaging-clustering --env=JAVA_OPTS_APPEND=-Djboss.messaging.cluster.password=password`
+
 6. Create a configmap for using the existing configuration.
 
 _Note: The configuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
 A default config has been provided named standalone-openshift.xml
 	`oc create configmap eap-config --from-file=standalone-openshift.xml=${WORKING_DIR}/standalone-openshift.xml`
+
 7. Create and mount a volume using the configmap created above
 	`oc set volume dc/messaging-clustering --add --name=standalone-config --configmap-name=eap-config -m ${GUEST_EAP_HOME}/standalone/configuration/standalone-openshift.xml -t configmap --sub-path=standalone-openshift.xml --default-mode=0664`
+
 8. Update the route created to make sure it matches the route config e.g. TLS passthrough if required...
 	`oc edit route/secure-messaging-clustering`
+
 9. Optionally if you want you can scale your deployment as follows
 	`oc scale dc messaging-clustering --replicas=3`
 
