@@ -85,6 +85,7 @@ Run the following set of commands to configure the namespace along with the vari
 
 9. Process the template picked using the parameter file created above using the following command
 	`oc process eap70-https-s2i -n openshift --param-file=${WORKING_DIR}/eap70-https-s2i.params -o json > ${WORKING_DIR}/messaging-clustering.json`
+
 _Note: The eap70-https-s2i by default points to the jboss-eap70-openshift:1.6 image but you will need to downgrade it the 1.3 tag because the other are missing lot of libraries. For example some modules folders are empty when they were supposed to contain libraries and module.xml config. 
 Make sure the produced OCP configuration uses the service account your set above as that will determine whether the built application could be deployed or not.
 
@@ -104,6 +105,7 @@ Build and deploy the Quickstart to the OCP cluster
 5. Set the Messaging cluster password through an environment variable for the deployment config
 	`oc set env dc/messaging-clustering --env=JAVA_OPTS_APPEND=-Djboss.messaging.cluster.password=password`
 6. Create a configmap for using the existing configuration.
+
 _Note: The configuration should be massaged to be ocp compatible (e.g. logging subsystem adjustment, socket binding, infinispan, jgroup, web subsystem might all need to be adjusted. Use the standalone-openshift.xml deployed with the original deployment of the template app as a model).
 A default config has been provided named standalone-openshift.xml
 	`oc create configmap eap-config --from-file=standalone-openshift.xml=${WORKING_DIR}/standalone-openshift.xml`
@@ -117,6 +119,7 @@ A default config has been provided named standalone-openshift.xml
 10. Optionally if you want to cluster the eap instances in the scaled up deployment from above make to set the following environment variables
 	`oc set env dc/messaging-clustering --env=OPENSHIFT_KUBE_PING_NAMESPACE=$(oc project -q)`
 	`oc set env dc/messaging-clustering --env=OPENSHIFT_KUBE_PING_LABELS=app=messaging-clustering`
+
 _Note: KUBE_PING is the default JGroup protocol being used in the standalone-openshift.xml provided, which you can change to use another one like DNS_PING, in which case you will have to change the two environment variables above to match the JGroup protocol (e.g. for DNS_PING you will be setting OPENSHIFT_DNS_PING_NAMESPACE and OPENSHIFT_DNS_PING_LABELS)
 The template used already has those two defined and you don't need to change them unless like stated above your are not using KUBE_PING.
 
