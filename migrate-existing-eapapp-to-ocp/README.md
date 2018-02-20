@@ -91,7 +91,7 @@ Run the following set of commands to configure the namespace along with the vari
 7. Describe the existing template you picked above (using eap70-https-s2i as starting point or base here)
 	`oc describe template eap70-https-s2i -n openshift`
 
-8. Create a pamaters file to be used to process the template. A sample file is provided here (named eap70-https-s2i.params) for the eap70-https-s2i
+8. Create a parameters file to be used to process the template. A sample file is provided here (named eap70-https-s2i.params) for the eap70-https-s2i
 
 9. Process the template picked using the parameter file created above using the following command
 	`oc process eap70-https-s2i -n openshift --param-file=${WORKING_DIR}/eap70-https-s2i.params -o json > ${WORKING_DIR}/mutual-auth-rs-helloworld.json`
