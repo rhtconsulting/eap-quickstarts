@@ -68,6 +68,8 @@ Run the following set of commands to configure the namespace along with the vari
 3. Grant Kubernetes REST API view access to the project created above to the service account using the following command .
 	`oc adm policy add-role-to-user view system:serviceaccount:$(oc project -q):eap7mc-service-account -n $(oc project -q)`
 
+_Note: The above Kube REST API permissions are requried for clustering to work. 
+
 4. Create secrets for necessary security artifacts e.g. keystore, truststore using the following commands. 
 	`oc secrets new eap-ks ${WORKING_DIR}/server.jks`
 
