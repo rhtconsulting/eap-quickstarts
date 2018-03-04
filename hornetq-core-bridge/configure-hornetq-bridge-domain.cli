@@ -17,6 +17,6 @@ jms-queue add --queue-address=bridgeDestinationQueue --entries=queue/bridgeDesti
 
 
 # start servers
-/server-group=jms-producer:start-servers
 /server-group=jms-consumer:start-servers
+/server-group=jms-producer:start-servers
 

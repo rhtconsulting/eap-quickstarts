@@ -125,14 +125,22 @@ To run the quickstart from the command line:
         mvn clean package jboss-as:deploy
 
 
-Execute the Quickstart
-----------------------
+Access the application 
+---------------------
+
+The application will be running at the following URL: <http://localhost:8080/jboss-helloworld-mdb-producer/> and will send some messages to the `bridgeSourceQueue` queue.
 
  
 Investigate the Console Output
 -------------------------
 
+Check the server log file of the jms-consumer-1 server located at `EAP_HOME/domain/servers/jms-consumer-1/log/server.log`. You should see output similar to the following:
 
+    13:55:20,202 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-0 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 1
+    13:55:20,209 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-14 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 2
+    13:55:20,221 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-0 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 3
+    13:55:20,224 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-8 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 4
+    13:55:20,234 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-0 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 5
 
 
 Remove the HornetQ Bridge Configuration
