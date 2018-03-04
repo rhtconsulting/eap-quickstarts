@@ -10,7 +10,7 @@ Source: <https://github.com/rhtconsulting/eap-quickstarts/>
 What is it?
 -----------
 
-The `hornetq-core-bridge` quickstart demonstrates the use of a HornetQ Core Bridge with JBoss Enterprise Application Platform. In JMS messaging, a bridge is used to consumer messages from a source queue, and reliably forward them to a target destination, usually on a different server. JBoss EAP supports two types of bridges:
+The `hornetq-core-bridge` quickstart demonstrates the use of a HornetQ Core Bridge with JBoss Enterprise Application Platform. In JMS messaging, a bridge is used to consume messages from a source queue, and reliably forward them to a target destination, usually on a different server. JBoss EAP supports two types of bridges:
 * the [HornetQ Core Bridge](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/6.4/html/administration_and_configuration_guide/sect-configuration1#Configuring_HornetQ_Core_Bridge) which can be used to bridge JBoss EAP with another server running HornetQ
 * the [JMS Bridge](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/6.4/html/administration_and_configuration_guide/sect-configuration1#Configuring_HornetQ_JMS_Bridge) which can be used to bridge JBoss EAP with any other server that supports the JMS specification
 
@@ -62,17 +62,7 @@ If you prefer, you can use the add-user utility interactively.
 For an example of how to use the add-user utility, see the instructions located here: [Add an Application User](https://github.com/jboss-developer/jboss-developer-shared-resources/blob/master/guides/CREATE_USERS.md#add-an-application-user).
 
 
-Start the JBoss EAP Server in Domain mode
----------------------------
-
-1. Open a command prompt and navigate to the root of the JBoss EAP directory.
-2. The following shows the command line to start JBoss EAP in domain mode:
-
-        For Linux:   EAP_HOME/bin/domain.sh
-        For Windows: EAP_HOME\bin\domain.bat
-
-
-Configure the JBoss EAP Servers
+Configure the JBoss EAP Servers using Domain mode
 ---------------------------
 
 You configure the HornetQ Bridge and JMS queues by running JBoss CLI commands. For your convenience, this quickstart batches the commands into `configure-hornetq-bridge-domain.cli` script provided in the root directory of this quickstart. 
@@ -86,11 +76,11 @@ You configure the HornetQ Bridge and JMS queues by running JBoss CLI commands. F
         For Linux:   EAP_HOME/bin/domain.sh
         For Windows: EAP_HOME\bin\domain.bat
 3. Review the `configure-hornetq-bridge-domain.cli` file in the root of this quickstart directory. This script:
-* adds the `bridgeSourceQueue` queue and the HornetQ core bridge configuration to the `messaging` subsystem of the full profile
-* adds the `bridgeDestinationQueue` queue to the full-ha profile
-* creates the jms-producer server group and server using the full profile
-* creates the jms-consumer server group and server using the full-ha profile
-* starts both server groups
+    * adds the `bridgeSourceQueue` queue and the HornetQ core bridge configuration to the `messaging` subsystem of the full profile
+    * adds the `bridgeDestinationQueue` queue to the full-ha profile
+    * creates the jms-producer server group and server using the full profile
+    * creates the jms-consumer server group and server using the full-ha profile
+    * starts both server groups
 
 _NOTE_: The full-ha profile is used for convenience. This quickstart does not require any of the -ha subsystems.
 
