@@ -143,6 +143,16 @@ Check the server log file of the jms-consumer-1 server located at `EAP_HOME/doma
     13:55:20,234 INFO  [class org.jboss.as.quickstarts.mdb.HelloWorldQueueMDB] (Thread-0 (HornetQ-client-global-threads-2085562247)) Received Message from queue: This is message 5
 
 
+Troubleshooting
+---------------
+
+If there are no log messages indicating JMS received on the consumer, check that the bridge has connected successfully. Check the logs of the jms-producer-1 server located at `EAP_HOME/domain/servers/jms-consumer-1/log/server.log`. You should see output similar to the following:
+
+    13:54:55,762 INFO  [org.hornetq.core.server] (Thread-22 (HornetQ-server-HornetQServerImpl::serverUUID=21fb780c-1fda-11e8-8202-fd4a0dcd3ed6-1881433381)) HQ221027: Bridge BridgeImpl@1b947cac [name=example-bridge, queue=QueueImpl[name=jms.queue.bridgeSourceQueue, postOffice=PostOfficeImpl [server=HornetQServerImpl::serverUUID=21fb780c-1fda-11e8-8202-fd4a0dcd3ed6]]@155381ae targetConnector=ServerLocatorImpl (identity=Bridge example-bridge) [initialConnectors=[TransportConfiguration(name=netty_remote, factory=org-hornetq-core-remoting-impl-netty-NettyConnectorFactory) ?port=6445&host=localhost], discoveryGroupConfiguration=null]] is connected
+
+If you do not see this log message indicating a successful connection, restart the jms-producer-1 server.
+
+
 Remove the HornetQ Bridge Configuration
 ----------------------------
 
