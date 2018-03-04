@@ -84,14 +84,29 @@ You configure the HornetQ Bridge and JMS queues by running JBoss CLI commands. F
 
 _NOTE_: The full-ha profile is used for convenience. This quickstart does not require any of the -ha subsystems.
 
-4. Open a new command prompt, navigate to the root directory of this quickstart, and run the following command, replacing EAP_HOME with the path to your server:
+4. Open a new command prompt, navigate to the root directory of this quickstart, and run the following command to stop any existing servers, replacing EAP_HOME with the path to your server:
+
+        For Linux: EAP_HOME/bin/jboss-cli.sh --connect ":stop-servers" 
+        For Windows: EAP_HOME\bin\jboss-cli.bat --connect ":stop-servers" 
+   You should see the following result when you run the command:
+
+        {
+            "outcome" => "success",
+            "result" => undefined,
+            "server-groups" => undefined
+        }
+
+5. Run the following command to configure the server, replacing EAP_HOME with the path to your server:
 
         For Linux: EAP_HOME/bin/jboss-cli.sh --connect --file=configure-hornetq-bridge-domain.cli 
         For Windows: EAP_HOME\bin\jboss-cli.bat --connect --file=configure-hornetq-bridge-domain.cli 
    You should see the following result when you run the script:
 
-        The batch executed successfully.
-        {"outcome" => "success"}
+        {
+            "outcome" => "success",
+            "result" => undefined,
+            "server-groups" => undefined
+        }
 
 
 Build and Deploy the Quickstart web applications

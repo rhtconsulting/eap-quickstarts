@@ -1,6 +1,3 @@
-# stop any servers in the domain that may be running
-:stop-servers
-
 # configure the full profile to be used as the jms producer
 jms-queue add --queue-address=bridgeSourceQueue --entries=queue/bridgeSource,java:jboss/exported/jms/queue/bridgeSource --durable=true --profile=full
 
