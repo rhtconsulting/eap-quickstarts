@@ -63,7 +63,7 @@ For an example of how to use the add-user utility, see the instructions located 
 
 
 Start the JBoss EAP Server in Domain mode
----------------
+---------------------------
 
 1. Open a command prompt and navigate to the root of the JBoss EAP directory.
 2. The following shows the command line to start JBoss EAP in domain mode:
@@ -75,8 +75,33 @@ Start the JBoss EAP Server in Domain mode
 Configure the JBoss EAP Servers
 ---------------------------
 
+You configure the HornetQ Bridge and JMS queues by running JBoss CLI commands. For your convenience, this quickstart batches the commands into `configure-hornetq-bridge-domain.cli` script provided in the root directory of this quickstart. 
+
+1. Before you begin, back up your server configuration file
+    * If it is running, stop the JBoss EAP server.
+    * Backup the file: `EAP_HOME/domain/configuration/domain.xml`
+    * After you have completed testing this quickstart, you can replace this file to restore the server to its original configuration.
+2. Start the JBoss EAP server in domain mode by typing the following: 
+
+        For Linux:   EAP_HOME/bin/domain.sh
+        For Windows: EAP_HOME\bin\domain.bat
+3. Review the `configure-hornetq-bridge-domain.cli` file in the root of this quickstart directory. This script:
+* adds the `bridgeSourceQueue` queue and the HornetQ core bridge configuration to the `messaging` subsystem of the full profile
+* adds the `bridgeDestinationQueue` queue to the full-ha profile
+* creates the jms-producer server group and server using the full profile
+* creates the jms-consumer server group and server using the full-ha profile
+* starts both server groups
 
 _NOTE_: The full-ha profile is used for convenience. This quickstart does not require any of the -ha subsystems.
+
+4. Open a new command prompt, navigate to the root directory of this quickstart, and run the following command, replacing EAP_HOME with the path to your server:
+
+        For Linux: EAP_HOME/bin/jboss-cli.sh --connect --file=configure-hornetq-bridge-domain.cli 
+        For Windows: EAP_HOME\bin\jboss-cli.bat --connect --file=configure-hornetq-bridge-domain.cli 
+   You should see the following result when you run the script:
+
+        The batch executed successfully.
+        {"outcome" => "success"}
 
 
 Build and Deploy the Quickstart web applications
