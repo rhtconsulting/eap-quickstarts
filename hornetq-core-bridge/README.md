@@ -120,6 +120,8 @@ Investigate the Console Output
 
 
 
-Remove the JMS Configuration
+Remove the HornetQ Bridge Configuration
 ----------------------------
 
+1. If it is running, stop the JBoss EAP server.
+2. Replace the `EAP_HOME/domain/configuration/domain.xml` file with the back-up copy of the file.
