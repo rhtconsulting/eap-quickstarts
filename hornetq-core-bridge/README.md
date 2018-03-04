@@ -128,7 +128,7 @@ To run the quickstart from the command line:
 Access the application 
 ---------------------
 
-The application will be running at the following URL: <http://localhost:8080/jboss-helloworld-mdb-producer/> and will send some messages to the `bridgeSourceQueue` queue.
+The application will be running at the following URL: <http://localhost:8080/jboss-helloworld-mdb-producer/> and will send some messages to the `bridgeSourceQueue` queue. The HornetQ core bridge will forward these messages to the `bridgeDestinationQueue` on the jms-consumer-1 server. There, an MDB listening on `bridgeDestinationQueue` will process the messages.
 
  
 Investigate the Console Output
