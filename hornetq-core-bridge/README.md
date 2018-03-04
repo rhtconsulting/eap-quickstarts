@@ -1,7 +1,7 @@
 JBoss EAP Quickstart: HornetQ Core Bridge Example
 =================================================
 Author: Serge Pagop, Andy Taylor, Jeff Mesnil, Bryan Parry  
-Level: Intermediate  
+Level: Advanced  
 Technologies: JMS  
 Summary: The `hornetq-core-bridge` quickstart demonstrates the use of a HornetQ Core Bridge with JBoss EAP.  
 Target Product: JBoss EAP  
@@ -14,11 +14,11 @@ The `hornetq-core-bridge` quickstart demonstrates the use of a HornetQ Core Brid
 * the [HornetQ Core Bridge](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/6.4/html/administration_and_configuration_guide/sect-configuration1#Configuring_HornetQ_Core_Bridge) which can be used to bridge JBoss EAP with another server running HornetQ
 * the [JMS Bridge](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/6.4/html/administration_and_configuration_guide/sect-configuration1#Configuring_HornetQ_JMS_Bridge) which can be used to bridge JBoss EAP with any other server that supports the JMS specification
 
-It contains the following:
+This quickstart contains the following:
 
 1. A message producer servlet that sends messages to a local JMS destination deployed to a JBoss EAP server (jms-producer-1).
 
-2. A message consumer that receives messages from a local JMS destination deployed to a JBoss EAP server (jms-consumer-1).
+2. A message consumer MDB that receives messages from a local JMS destination deployed to a JBoss EAP server (jms-consumer-1).
 
 3. Configuration for JBoss EAP to create a HornetQ core bridge that forwards JMS messages from the source destination to the target destination.
 
