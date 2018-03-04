@@ -1,0 +1,22 @@
+# configure the full profile to be used as the jms producer
+jms-queue add --queue-address=bridgeSourceQueue --entries=queue/bridgeSource,java:jboss/exported/jms/queue/bridgeSource --durable=true --profile=full
+
+# configure the full-ha profile to be used as the jms consumer
+jms-queue add --queue-address=bridgeDestinationQueue --entries=queue/bridgeDestination,java:jboss/exported/jms/queue/bridgeDestination --durable=true --profile=full-ha
+
+# add the hornetq core bridge configuration to the producer configuration (full)
+#   using port 6445 for the destination connector (5445 + 1000 port offset)
+/profile=full/subsystem=messaging/hornetq-server=default/connector=netty_remote:add(factory-class=org.hornetq.core.remoting.impl.netty.NettyConnectorFactory, param=[host=localhost, port=6445])
+/profile=full/subsystem=messaging/hornetq-server=default/bridge=example-bridge:add(queue-name=jms.queue.bridgeSourceQueue,forwarding-address=jms.queue.bridgeDestinationQueue,ha=false,failover-on-server-shutdown=false,use-duplicate-detection=true,user=quickstartUser,password=quickstartPwd1!,static-connectors=["netty_remote"])
+
+# create servers and server groups
+/server-group=jms-producer:add(profile=full, socket-binding-group=full-sockets, socket-binding-port-offset=0)
+/server-group=jms-consumer:add(profile=full-ha, socket-binding-group=full-ha-sockets, socket-binding-port-offset=1000)
+/host=master/server-config=jms-producer-1:add(group=jms-producer, auto-start=true)
+/host=master/server-config=jms-consumer-1:add(group=jms-consumer, auto-start=true)
+
+
+# start servers
+/server-group=jms-consumer:start-servers
+/server-group=jms-producer:start-servers
+
