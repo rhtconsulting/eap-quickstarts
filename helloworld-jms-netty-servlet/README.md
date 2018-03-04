@@ -1,6 +1,6 @@
 JBoss EAP Quickstart: Helloworld JMS Netty Servlet Example
 ==========================================================
-Author: Weston Price and Bryan Parry
+Author: Weston Price and Bryan Parry 
 Level: Intermediate  
 Technologies: JMS  
 Summary: The `helloworld-jms-netty-servlet` quickstart demonstrates the use of external JMS clients with JBoss EAP using the Netty Servlet connector.  
@@ -16,7 +16,7 @@ It contains the following:
 
 1. A message producer that sends messages to a JMS destination deployed to a JBoss EAP server.
 
-2. A message consumer that receives message from a JMS destination deployed to a JBoss EAP server.
+2. A message consumer that receives messages from a JMS destination deployed to a JBoss EAP server.
 
 
 System requirements
