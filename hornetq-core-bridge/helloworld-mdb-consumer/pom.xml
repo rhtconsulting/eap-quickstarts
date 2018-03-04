@@ -117,7 +117,7 @@
                 <configuration>
                     <domain>
                         <server-groups>
-                            <server-group>jms-destination</server-group>
+                            <server-group>jms-consumer</server-group>
                         </server-groups>
                     </domain>
                 </configuration>

@@ -117,7 +117,7 @@
                 <configuration>
                     <domain>
                         <server-groups>
-                            <server-group>jms-source</server-group>
+                            <server-group>jms-producer</server-group>
                         </server-groups>
                     </domain>
                 </configuration>
